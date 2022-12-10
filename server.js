@@ -1,36 +1,53 @@
+/* eslint-disable no-undef */
+// Requiring the server dependencies
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+
 // Setup empty JS object to act as endpoint for all routes
-const projectData = {};
-// Express to run server and routes
-// Start up an instance of app
-const APP = express();
-/* Dependencies */
-/* Middleware*/
+let projectData = {};
+
+// Instantiating up an instance of express app
+const app = express();
+
 //Here we are configuring express to use body-parser as middle-ware.
-APP.use(bodyParser.urlencoded({ extended: false }));
-APP.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 // Cors for cross origin allowance
-APP.use(cors());
+app.use(cors());
+
 // Initialize the main project folder
-APP.use(express.static('website'));
-// Spin up the serverq
+app.use(express.static('website'));
+
+// Running the server on port 3000
 const PORT = 3000;
-APP.listen(PORT, listening);
+app.listen(PORT, listening);
+
 // Callback to debug
 function listening() {
   console.log(`Server Running on http://localhost:${PORT}/`);
 }
+
 // Initialize all route with a callback function
 // Callback function to complete GET '/all'
-APP.get('/all', (req, res) => {
+app.get('/all', function (req, res) {
+  locationValidation(projectData.temp);
   res.send(projectData);
 });
 
 // Post Route
-const DATA = [];
-APP.post('/', (req, res) => {
-  DATA.push(req.body);
-  res.send(200);
+app.post('/', (req, res) => {
+  projectData = req.body;
+  res.sendStatus(200);
 });
+
+// validating opean weather API response at server side
+function locationValidation(value) {
+  if (typeof value === 'number') {
+    projectData.temp = Math.round(projectData.temp) + ' degrees';
+  } else {
+    projectData.error =
+      projectData.error.charAt(0).toUpperCase() + projectData.error.slice(1);
+  }
+}

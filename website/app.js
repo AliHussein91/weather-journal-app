@@ -6,13 +6,13 @@ const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?zip=';
 
 // Create a new date instance dynamically with JS
 let d = new Date();
-let newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
+let newDate = d.getMonth() + 1 + '/' + d.getDate() + '/' + d.getFullYear();
 
 // Personal API Key for OpenWeatherMap API
 const API_KEY = '&appid=c08debf9384e38b29c46eccba084df12&units=imperial';
 
 /* Function to GET Web API Data */
-async function getData(url = '') {
+let getData = async (url = '') => {
   let res = await fetch(url, {
     method: 'GET',
     credentials: 'same-origin',
@@ -24,10 +24,10 @@ async function getData(url = '') {
   } catch (err) {
     console.error('Could not get data from server!');
   }
-}
+};
 
 /* Function to POST data */
-async function postData(url = '', data = {}) {
+let postData = async (url = '', data = {}) => {
   await fetch(url, {
     method: 'POST',
     credentials: 'same-origin',
@@ -37,10 +37,10 @@ async function postData(url = '', data = {}) {
     console.log(err);
     console.error('Could not post data to server!');
   });
-}
+};
 
 // Getting weather data from OpenWeather API
-async function getWeather(zipCode) {
+let getWeather = async (zipCode) => {
   let res = await fetch(`${BASE_URL}${zipCode}${API_KEY}`);
   try {
     let weatherInfo = await res.json();
@@ -48,10 +48,10 @@ async function getWeather(zipCode) {
   } catch (err) {
     console.error('Could not get weather data from Open Weather!');
   }
-}
+};
 
 /* show data on HTML */
-function showData(dataReceived) {
+let showData = (dataReceived) => {
   // Clearing the display area to display the most recent entery only
   DISPLAY_AREA.innerHTML = '';
   // Checking if an error is received
@@ -75,7 +75,7 @@ function showData(dataReceived) {
     });
     DISPLAY_AREA.appendChild(FRAGMENT);
   }
-}
+};
 
 // Event listener to add function to existing HTML DOM element
 WEATHER_FORM[2].addEventListener('click', getPostData);
@@ -89,8 +89,8 @@ function getPostData(e) {
     .then((data) => {
       if (data.cod === 200) {
         postData('/', {
-          date: newDate,
           temp: data.main.temp,
+          date: newDate,
           feel: WEATHER_FORM[1].value,
           description: data.weather[0].description,
         });
